@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+@layer base {
+  :root {
+    --font-orbitron: 'Orbitron', serif;
+  }
+}
+
+@layer utilities {
+  .font-orbitron {
+    font-family: var(--font-orbitron);
+  }
+}
+
+body {
+  overflow-x: hidden;
+}
