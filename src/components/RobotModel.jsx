@@ -58,6 +58,7 @@ const RobotModel = () => {
     const topLight = new THREE.DirectionalLight(0xffffff);
     topLight.position.set(0, 10, 5);
     scene.add(topLight);
+
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(5, 10, 7);
     directionalLight.castShadow = true;
@@ -85,7 +86,7 @@ const RobotModel = () => {
           scene.add(robot);
 
           robot.position.y = -2;
-          robot.position.x = 4;
+          robot.position.x = -4;
           robot.position.z = 0.2;
           robot.scale.set(0.3, 0.3, 0.3);
 
@@ -94,7 +95,8 @@ const RobotModel = () => {
 
           // Ambil semua animasi yang tersedia
           gltf.animations.forEach((clip) => {
-            actions[clip.name] = mixer.clipAction(clip);
+            const animation = mixerRef.current.clipAction(clip);
+            actions[clip.name] = animation;
           });
 
           // Mulai dengan animasi pertama
@@ -105,7 +107,7 @@ const RobotModel = () => {
             currentAction.play();
           }
 
-          modelMove();
+          setTimeout(modelMove, 300);
         }
       },
       undefined,
@@ -128,7 +130,7 @@ const RobotModel = () => {
       {
         id: 'welcome',
         position: {
-          x: -4,
+          x: -3,
           y: -1,
           z: 0,
         },
@@ -137,28 +139,36 @@ const RobotModel = () => {
           y: Math.PI / 2,
           z: 0,
         },
+        scale: {
+          x: 1,
+          y: 1,
+          z: 1,
+        },
         animation: ROBOT_ANIMATIONS.ROOT_IDLE_ALT,
-        duration: 0.8,
       },
       {
         id: 'skills',
         position: {
-          x: 4,
-          y: -2,
-          z: -0.5,
+          x: 3,
+          y: -3,
+          z: 1,
         },
         rotation: {
           x: 0,
           y: 0,
           z: 0,
         },
+        scale: {
+          x: 2,
+          y: 2,
+          z: 2,
+        },
         animation: ROBOT_ANIMATIONS.ROOT_IDLE,
-        duration: 0.4,
       },
     ];
 
     // Fungsi untuk mengganti animasi
-    function switchAnimation(newAnimation, speed) {
+    function switchAnimation(newAnimation) {
       if (!actions[newAnimation] || !currentAction) return;
 
       if (currentAction._clip.name === newAnimation) return;
@@ -166,10 +176,10 @@ const RobotModel = () => {
       const prevAction = currentAction;
       currentAction = actions[newAnimation];
 
-      prevAction.fadeOut(0.2);
+      prevAction.fadeOut(0.1);
       currentAction
         .reset()
-        .setEffectiveTimeScale(speed)
+        .setEffectiveTimeScale(0.8)
         .setEffectiveWeight(1)
         .fadeIn(0.3)
         .play();
@@ -179,7 +189,7 @@ const RobotModel = () => {
       if (!robot) return;
 
       const sections = document.getElementsByTagName('section');
-      console.log(sections);
+
       let currentSection;
       for (let section of sections) {
         const rect = section.getBoundingClientRect();
@@ -207,26 +217,29 @@ const RobotModel = () => {
           delay: 0.2,
           onStart: () => {
             //pilih animasi
-            switchAnimation(ROBOT_ANIMATIONS.RUN, 1);
+            switchAnimation(ROBOT_ANIMATIONS.ROOT_RUN);
           },
-          smoothOrigin: true,
           overwrite: 'auto',
           onComplete: () => {
             //pilih animasi
-            switchAnimation(
-              newPositionModel.animation,
-              newPositionModel.duration
-            );
+            switchAnimation(newPositionModel.animation);
           },
         });
         gsap.to(robot.rotation, {
           x: newPositionModel.rotation.x,
           y: newPositionModel.rotation.y,
           z: newPositionModel.rotation.z,
-          smoothOrigin: true,
           overwrite: 'auto',
           duration: 0.8,
           ease: 'power1.out',
+        });
+        gsap.to(robot.scale, {
+          x: newPositionModel.scale.x,
+          y: newPositionModel.scale.y,
+          z: newPositionModel.scale.z,
+          overwrite: 'auto',
+          duration: 0.8,
+          ease: 'power2.out',
         });
       }
     };
@@ -235,7 +248,7 @@ const RobotModel = () => {
 
     reRender3D();
 
-    if (robotRef.current) {
+    if (!robotRef.current.hasChildNodes()) {
       robotRef.current.appendChild(renderer.domElement);
     }
 
@@ -250,11 +263,14 @@ const RobotModel = () => {
     requestAnimationFrame(raf);
 
     return () => {
-      if (robotRef.current) {
+      // Cleanup Three.js
+      if (robotRef.current?.hasChildNodes()) {
         robotRef.current.removeChild(renderer.domElement);
+        // Remove event listeners
+        window.removeEventListener('scroll', modelMove);
       }
+
       renderer.dispose();
-      window.removeEventListener('scroll', modelMove);
     };
   }, []);
 
