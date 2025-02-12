@@ -26,12 +26,12 @@ const RobotModel = () => {
 
     // Initial Camera
     const camera = new THREE.PerspectiveCamera(
-      30,
+      80,
       window.innerWidth / window.innerHeight,
-      1,
+      0.1,
       1000
     );
-    camera.position.z = 10;
+    camera.position.z = 0;
     camera.position.x = 0;
     camera.position.y = 0;
 
@@ -100,8 +100,7 @@ const RobotModel = () => {
           });
 
           // Mulai dengan animasi pertama
-          currentAction = actions[ROBOT_ANIMATIONS.ROOT_WALK];
-
+          currentAction = actions[ROBOT_ANIMATIONS.IDLE];
           if (currentAction) {
             currentAction.setEffectiveTimeScale(1);
             currentAction.play();
@@ -145,6 +144,10 @@ const RobotModel = () => {
           z: 1,
         },
         animation: ROBOT_ANIMATIONS.ROOT_IDLE_ALT,
+        onStart: () => {
+          //pilih animasi
+          switchAnimation(ROBOT_ANIMATIONS.WALK, 0.25);
+        },
       },
       {
         id: 'skills',
@@ -163,12 +166,19 @@ const RobotModel = () => {
           y: 2,
           z: 2,
         },
-        animation: ROBOT_ANIMATIONS.ROOT_IDLE,
+        onStart: () => {
+          //pilih animasi
+          switchAnimation(ROBOT_ANIMATIONS.ROOT_RUN, 0.8);
+        },
+        onComplete: () => {
+          //pilih animasi
+          switchAnimation(ROBOT_ANIMATIONS.ROOT_IDLE);
+        },
       },
     ];
 
     // Fungsi untuk mengganti animasi
-    function switchAnimation(newAnimation) {
+    function switchAnimation(newAnimation, timeScale = 0.8) {
       if (!actions[newAnimation] || !currentAction) return;
 
       if (currentAction._clip.name === newAnimation) return;
@@ -179,7 +189,7 @@ const RobotModel = () => {
       prevAction.fadeOut(0.1);
       currentAction
         .reset()
-        .setEffectiveTimeScale(0.8)
+        .setEffectiveTimeScale(timeScale)
         .setEffectiveWeight(1)
         .fadeIn(0.3)
         .play();
@@ -216,14 +226,12 @@ const RobotModel = () => {
           ease: 'power3.out',
           delay: 0.2,
           onStart: () => {
-            //pilih animasi
-            switchAnimation(ROBOT_ANIMATIONS.ROOT_RUN);
+            newPositionModel.onStart();
+          },
+          onComplete: () => {
+            newPositionModel.onComplete();
           },
           overwrite: 'auto',
-          onComplete: () => {
-            //pilih animasi
-            switchAnimation(newPositionModel.animation);
-          },
         });
         gsap.to(robot.rotation, {
           x: newPositionModel.rotation.x,

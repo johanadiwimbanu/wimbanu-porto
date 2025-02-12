@@ -1,8 +1,21 @@
 import RobotModel from './components/RobotModel';
 import SectionSkills from './components/SectionSkill';
 import SectionProjects from './components/SectionProjects';
+import { useEffect } from 'react';
+import Lenis from 'lenis';
 
 function App() {
+  useEffect(() => {
+    const lenis = new Lenis();
+
+    // Use requestAnimationFrame to continuously update the scroll
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+  }, []);
   // const techStack = ['React', 'Three.js', 'Node.js', 'Laravel', 'Tailwind CSS'];
 
   return (
