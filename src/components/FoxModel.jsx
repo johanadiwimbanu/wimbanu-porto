@@ -91,107 +91,161 @@ const Fox = () => {
             setAnimation(
               animationMixer,
               gltf.animations,
-              'Fox_Sit1',
+              'Fox_Jump',
               false,
               () => {
                 setAnimation(
                   animationMixer,
                   gltf.animations,
-                  'Fox_Sit_Idle_Break'
+                  'Fox_Walk_InPlace'
                 );
               }
             );
           }
         );
 
-        gsap.to(model.rotation, {
-          scrollTrigger: {
-            trigger: '.welcome',
-            start: 'top top',
-            end: 'bottom top',
-            scrub: true,
-          },
-          y: -0.8,
-          delay: 1,
-          ease: 'power2.in',
-        });
+        setTimeout(() => {
+          gsap.to(model.scale, {
+            x: 3.5,
+            y: 3.5,
+            z: 3.5,
+            duration: 3,
+            onStart: () => {
+              setAnimation(animationMixer, gltf.animations, 'Fox_Run_InPlace');
+            },
+            onComplete: () => {
+              setAnimation(
+                animationMixer,
+                gltf.animations,
+                'Fox_Sit1',
+                false,
+                () => {
+                  setAnimation(
+                    animationMixer,
+                    gltf.animations,
+                    'Fox_Sit_Idle_Break'
+                  );
+                }
+              );
+            },
+          });
 
-        gsap.to(model.position, {
-          scrollTrigger: {
-            trigger: '.welcome',
-            start: 'top top',
-            end: 'bottom top',
-            scrub: true,
-          },
-          x: 100,
-          y: -20,
-          delay: 0.5,
-          duration: 2,
-          ease: 'power3.inOut',
-          onReverseComplete: () => {
-            setAnimation(
-              animationMixer,
-              gltf.animations,
-              'Fox_Somersault_InPlace',
-              false,
-              () => {
-                setAnimation(
-                  animationMixer,
-                  gltf.animations,
-                  'Fox_Sit1',
-                  false,
-                  () => {
-                    setAnimation(
-                      animationMixer,
-                      gltf.animations,
-                      'Fox_Sit_Idle_Break'
-                    );
-                  }
-                );
-              }
-            );
-          },
-          onStart: () => {
-            setAnimation(animationMixer, gltf.animations, 'Fox_Walk_InPlace');
-          },
-          onUpdate: () => {
-            // Update light untuk mengikuti model dengan tepat
-            mesh.position.y = model.position.y;
+          gsap.to(model.position, {
+            y: -15,
+            duration: 3,
+            delay: 0.5,
+            onUpdate: () => {
+              // Update light untuk mengikuti model dengan tepat=
 
-            gsap.to(mesh.position, {
-              x: model.position.x,
-              y: model.position.y,
-              z: model.position.z,
-            });
+              gsap.to(mesh.position, {
+                x: model.position.x,
+                y: model.position.y,
+                z: model.position.z,
+              });
 
-            directionalLight.position.set(
-              model.position.x,
-              +20,
-              model.position.y + 20, // Kurangi offset
-              model.position.z + 20 // Tambah sedikit offset Z untuk sudut shadow yang lebih baik
-            );
+              directionalLight.position.set(
+                model.position.x,
+                model.position.y + 20, // Kurangi offset
+                model.position.z - 2 // Tambah sedikit offset Z untuk sudut shadow yang lebih baik
+              );
 
-            lightTarget.position.set(
-              model.position.x,
-              model.position.y, // Tepat di ground plane
-              model.position.z
-            );
-          },
-          onComplete: () => {
-            setAnimation(animationMixer, gltf.animations, 'Fox_Sit_Idle_Break');
-          },
-        });
-        gsap.to(model.scale, {
-          scrollTrigger: {
-            trigger: '.welcome',
-            start: 'top top',
-            end: 'bottom top',
-            scrub: true,
-          },
-          x: 3,
-          y: 3,
-          z: 3,
-        });
+              lightTarget.position.set(
+                model.position.x,
+                model.position.y, // Tepat di ground plane
+                model.position.z
+              );
+            },
+          });
+        }, 3000);
+
+        // gsap.to(model.rotation, {
+        //   scrollTrigger: {
+        //     trigger: '.welcome',
+        //     start: 'top top',
+        //     end: 'bottom top',
+        //     scrub: true,
+        //   },
+        //   y: -0.8,
+        //   delay: 1,
+        //   ease: 'power2.in',
+        // });
+
+        // gsap.to(model.position, {
+        //   scrollTrigger: {
+        //     trigger: '.welcome',
+        //     start: 'top top',
+        //     end: 'bottom top',
+        //     scrub: true,
+        //   },
+        //   x: 100,
+        //   y: -20,
+        //   delay: 0.5,
+        //   duration: 2,
+        //   ease: 'power3.inOut',
+        //   onReverseComplete: () => {
+        //     setAnimation(
+        //       animationMixer,
+        //       gltf.animations,
+        //       'Fox_Somersault_InPlace',
+        //       false,
+        //       () => {
+        //         setAnimation(
+        //           animationMixer,
+        //           gltf.animations,
+        //           'Fox_Sit1',
+        //           false,
+        //           () => {
+        //             setAnimation(
+        //               animationMixer,
+        //               gltf.animations,
+        //               'Fox_Sit_Idle_Break'
+        //             );
+        //           }
+        //         );
+        //       }
+        //     );
+        //   },
+        //   onStart: () => {
+        //     setAnimation(animationMixer, gltf.animations, 'Fox_Walk_InPlace');
+        //   },
+        //   onUpdate: () => {
+        //     // Update light untuk mengikuti model dengan tepat
+        //     mesh.position.y = model.position.y;
+
+        //     gsap.to(mesh.position, {
+        //       x: model.position.x,
+        //       y: model.position.y,
+        //       z: model.position.z,
+        //     });
+
+        //     directionalLight.position.set(
+        //       model.position.x,
+        //       +20,
+        //       model.position.y + 20, // Kurangi offset
+        //       model.position.z + 20 // Tambah sedikit offset Z untuk sudut shadow yang lebih baik
+        //     );
+
+        //     lightTarget.position.set(
+        //       model.position.x,
+        //       model.position.y, // Tepat di ground plane
+        //       model.position.z
+        //     );
+        //   },
+        //   onComplete: () => {
+        //     setAnimation(animationMixer, gltf.animations, 'Fox_Sit_Idle_Break');
+        //   },
+        // });
+        // gsap.to(model.scale, {
+        //   scrollTrigger: {
+        //     trigger: '.welcome',
+        //     start: 'top top',
+        //     end: 'bottom top',
+        //     scrub: true,
+        //   },
+        //   x: 3,
+        //   y: 3,
+        //   z: 3,
+        // });
       },
       undefined,
       (error) => console.error(error)
@@ -208,8 +262,6 @@ const Fox = () => {
     controls.enableDamping = true; // Animasi smooth saat berhenti
     controls.dampingFactor = 0.05; // Seberapa cepat kontrol berhenti
     controls.screenSpacePanning = false; // Tidak bisa digeser ke atas/bawah secara bebas
-    controls.minDistance = 150; // Zoom minimum
-    controls.maxDistance = 300; // Zoom maksimum
     controls.maxPolarAngle = Math.PI / 2; // Batas atas rotasi kamera (0 = bebas)
     controls.enablePan = false; // Hindari geser horizontal
     controls.enableZoom = false; // Hindari geser horizontal
@@ -217,7 +269,7 @@ const Fox = () => {
     const clock = new THREE.Clock();
     const reRender3D = () => {
       requestAnimationFrame(reRender3D);
-      controls.update(); // Tambahkan ini agar smooth
+      // controls.update(); // Tambahkan ini agar smooth
       renderer.render(scene, camera);
       if (mixerRef.current) {
         mixerRef.current.update(clock.getDelta());

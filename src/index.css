@@ -4,3 +4,7 @@
 @theme {
   --font-orbitron: 'Orbitron', serif;
 }
+
+body {
+  @apply bg-lime-100 font-orbitron;
+}
