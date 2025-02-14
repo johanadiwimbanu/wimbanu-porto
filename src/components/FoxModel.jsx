@@ -1,13 +1,12 @@
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader, OrbitControls } from 'three/examples/jsm/Addons.js';
-gsap.registerPlugin(ScrollTrigger);
 
-const Fox = () => {
+const FoxModel = forwardRef((props, ref) => {
   const modelRef = useRef(null);
-  const mixerRef = useRef();
+  const mixerRef = useRef(null);
+  const animationsRef = useRef(null);
   const isMounted = useRef(null);
   let currentAction;
 
@@ -82,6 +81,7 @@ const Fox = () => {
         // ✅ Tambahkan Animasi
         const animationMixer = new THREE.AnimationMixer(model);
         mixerRef.current = animationMixer;
+        animationsRef.current = gltf.animations;
         setAnimation(
           animationMixer,
           gltf.animations,
@@ -330,7 +330,16 @@ const Fox = () => {
     currentAction = newAction;
   };
 
-  return <div ref={modelRef} className='fixed border border-blue-900'></div>;
-};
+  // Expose methods and refs using useImperativeHandle
+  useImperativeHandle(ref, () => ({
+    modelRef: modelRef.current,
+    mixerRef: mixerRef.current,
+    animationsRef: animationsRef.current,
+    setAnimation: setAnimation,
+  }));
 
-export default Fox;
+  return <div ref={modelRef} className='fixed border border-blue-900'></div>;
+});
+FoxModel.displayName = FoxModel;
+
+export default FoxModel;
