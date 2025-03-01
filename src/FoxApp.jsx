@@ -12,19 +12,21 @@ import {
 import Navigation from './components/Navigation';
 import GameDialog from './components/GameDialog';
 import AboutSection from './components/AboutSection';
+import SkillsSection from './components/SkillSection';
 gsap.registerPlugin(ScrollTrigger);
 
 const FoxApp = () => {
-  const circleRef = useRef(false);
-  const aboutContentRef = useRef(null);
   const foxRef = useRef(null);
   const [isWelcomeDialogStart, setIsWelcomeDialogStart] = useState(false);
   const welcomeDialogRef = useRef(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isMenuShow, setIsMenuShow] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(null);
 
   useEffect(() => {
-    const lenis = new Lenis();
+    const lenis = new Lenis({
+      duration: 2,
+    });
 
     function raf(time) {
       lenis.raf(time);
@@ -35,7 +37,7 @@ const FoxApp = () => {
 
     const gameDialogStartTimer = setTimeout(() => {
       setIsWelcomeDialogStart(true);
-    }, 8500);
+    }, 8000);
 
     return () => {
       clearTimeout(gameDialogStartTimer);
@@ -91,9 +93,9 @@ const FoxApp = () => {
   }, [isMenuShow]);
 
   const welcomeDialogues = [
-    'Hai! Aku Foxy, asisten virtual yang akan memandu kamu menjelajahi portfolio ini.',
-    'Aku akan mengenalkanmu kepada <strong>The Wolf</strong>, sang pemilik portofolio ini. Siap untuk menjelajah?',
-    'Kamu bisa mengklik menu navigasi atau scroll down untuk melihat lebih detail setelah ini.',
+    // 'Hai! Aku Foxy, asisten virtual yang akan memandu kamu menjelajahi portfolio ini.',
+    // 'Aku akan mengenalkanmu kepada <strong>The Wolf</strong>, sang pemilik portofolio ini. Siap untuk menjelajah?',
+    // 'Kamu bisa mengklik menu navigasi atau scroll down untuk melihat lebih detail setelah ini.',
     'Selamat menikmati pengalaman interaktif ini!✨',
   ];
   const [currentDialoguesIndex, setCurrentDialoguesIndex] = useState(0);
@@ -131,10 +133,22 @@ const FoxApp = () => {
   };
 
   const menuItems = [
-    { id: 'wolf', icon: <GiWolfHead className='w-12 h-12' /> },
-    { id: 'backpack', icon: <GiLightBackpack className='w-12 h-12' /> },
-    { id: 'box', icon: <GiCardboardBoxClosed className='w-12 h-12' /> },
-    { id: 'mailbox', icon: <GiMailbox className='w-12 h-12' /> },
+    { id: 'wolf', icon: <GiWolfHead className='w-12 h-12' />, name: 'about' },
+    {
+      id: 'backpack',
+      icon: <GiLightBackpack className='w-12 h-12' />,
+      name: 'skill',
+    },
+    {
+      id: 'box',
+      icon: <GiCardboardBoxClosed className='w-12 h-12' />,
+      name: 'project',
+    },
+    {
+      id: 'mailbox',
+      icon: <GiMailbox className='w-12 h-12' />,
+      name: 'contact',
+    },
   ];
 
   const containerRef = useRef(null);
@@ -163,7 +177,7 @@ const FoxApp = () => {
 
   return (
     <div className='h-screen w-full relative'>
-      <div className='relative z-0 h-screen'>
+      <div className='absolute z-0 h-screen'>
         <FoxModel ref={foxRef} />
       </div>
 
@@ -183,12 +197,11 @@ const FoxApp = () => {
 
       {isMenuShow && (
         <>
-          <div ref={containerRef} className='fixed top-[50%] left-16 '>
-            <Navigation menuItems={menuItems} />
+          <div ref={containerRef} className='fixed top-1/2 left-16 z-10'>
+            <Navigation menuItems={menuItems} setActiveMenu={setActiveMenu} />
           </div>
-          <div className='h-[100vh]'>
-            <AboutSection />
-          </div>
+          {activeMenu === 'about' && <AboutSection />}
+          {activeMenu === 'skill' && <SkillsSection />}
         </>
       )}
     </div>

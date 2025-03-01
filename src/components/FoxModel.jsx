@@ -54,11 +54,12 @@ const FoxModel = forwardRef((props, ref) => {
       window.innerWidth,
       window.innerHeight
     );
+    // Tambahakan Mesh untuk menerima bayangan
     const meshMaterial = new THREE.ShadowMaterial({
       opacity: 0.5, // Material khusus untuk menampilkan bayangan
     });
     const mesh = new THREE.Mesh(planeGeo, meshMaterial);
-    mesh.rotation.x = -Math.PI / 2;
+    mesh.rotation.x = -Math.PI / 2; // Rotasi sebesar -π/2 agar sejajar dengan lantai
     mesh.receiveShadow = true;
     scene.add(mesh);
 

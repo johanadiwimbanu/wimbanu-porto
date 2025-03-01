@@ -20,11 +20,21 @@ const GameDialog = ({ text, onNext }) => {
     setDisplayText('');
     setIsComplete(false);
 
-    // Animate text change
+    // Enhanced neumorphic animation
     gsap.fromTo(
       dialogContentRef.current,
-      { opacity: 0, y: 10 },
-      { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }
+      {
+        opacity: 0,
+        y: 10,
+        boxShadow: 'inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff',
+      },
+      {
+        opacity: 1,
+        y: 0,
+        boxShadow: '5px 5px 10px #bebebe, -5px -5px 10px #ffffff',
+        duration: 0.5,
+        ease: 'power2.out',
+      }
     );
   }, [text]);
 
@@ -41,19 +51,26 @@ const GameDialog = ({ text, onNext }) => {
   };
 
   return (
-    <div className='relative min-w-52 max-w-80 pb-12 p-4 bg-black border-2 border-cyan-300 min-h-32 rounded-2xl shadow-lg'>
-      <div ref={dialogContentRef}>
+    <div className='relative min-w-52 max-w-80'>
+      <div
+        ref={dialogContentRef}
+        className='p-4 rounded-xl bg-gray-100 
+                   shadow-[inset_3px_3px_6px_#bebebe,inset_-3px_-3px_6px_#ffffff] pb-12'
+      >
         <p
-          className='text-lg text-white font-mono min-h-16'
+          className='text-lg text-gray-700 font-mono min-h-16'
           dangerouslySetInnerHTML={{ __html: displayText || '...' }}
         />
       </div>
 
-      <div className='absolute bottom-2 right-2 flex gap-2'>
+      <div className='absolute bottom-4 right-4 flex gap-3'>
         {!isComplete && (
           <button
             onClick={handleSkip}
-            className='px-4 py-1 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors'
+            className='px-4 py-2 bg-gray-100 text-gray-700 font-bold rounded-xl
+                       shadow-[3px_3px_6px_#bebebe,-3px_-3px_6px_#ffffff]
+                       hover:shadow-[inset_3px_3px_6px_#bebebe,inset_-3px_-3px_6px_#ffffff]
+                       transition-all duration-500'
           >
             Skip
           </button>
@@ -61,7 +78,10 @@ const GameDialog = ({ text, onNext }) => {
         {isComplete && (
           <button
             onClick={onNext}
-            className='px-4 py-1 bg-cyan-300 text-black font-bold rounded-lg hover:bg-cyan-400 transition-colors'
+            className='px-4 py-2 bg-gray-100 text-gray-700 font-bold rounded-xl
+                       shadow-[3px_3px_6px_#bebebe,-3px_-3px_6px_#ffffff]
+                       hover:shadow-[inset_3px_3px_6px_#bebebe,inset_-3px_-3px_6px_#ffffff]
+                       hover:text-cyan-500 transition-all duration-500'
           >
             ▶ Next
           </button>
