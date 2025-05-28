@@ -315,7 +315,21 @@ const FoxApp = () => {
 
         {isContentShow && (
           <div className='relative md:mb-0'>
-            {activeMenu === 'about' && <AboutSection />}
+            {activeMenu === 'about' && (
+              <AboutSection
+                onDownloadCV={() => {
+                  const fileUrl = '/files/resume-johanadiwimbanu.pdf';
+
+                  const a = document.createElement('a');
+                  a.href = fileUrl;
+                  a.download = 'resume-johanadiwimbanu.pdf';
+                  a.click();
+                }}
+                onGetInTouch={() => {
+                  setActiveMenu('contact');
+                }}
+              />
+            )}
             {activeMenu === 'skill' && <SkillsSection />}
             {activeMenu === 'project' && <ProjectsSection />}
             {activeMenu === 'contact' && <ContactSection />}

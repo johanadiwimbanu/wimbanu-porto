@@ -38,6 +38,8 @@ const AboutSection = ({
     projectsCompleted: 10,
   },
   className = '',
+  onDownloadCV,
+  onGetInTouch,
 }) => {
   const containerRef = useRef(null);
   const cardRef = useRef(null);
@@ -237,6 +239,16 @@ const AboutSection = ({
     }
   };
 
+  const handleButtonCV = (index) => {
+    handleButtonClick(index);
+    onDownloadCV();
+  };
+
+  const handleButtonGetInTouch = (index) => {
+    handleButtonClick(index);
+    onGetInTouch();
+  };
+
   return (
     <div
       ref={containerRef}
@@ -405,7 +417,7 @@ const AboutSection = ({
               className='w-full bg-gray-100 shadow-[8px_8px_16px_#bebebe,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#bebebe,-4px_-4px_8px_#ffffff] active:shadow-[inset_4px_4px_8px_#bebebe,inset_-4px_-4px_8px_#ffffff] text-gray-800 font-semibold py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2'
               onMouseEnter={() => handleButtonHover(0, true)}
               onMouseLeave={() => handleButtonHover(0, false)}
-              onClick={() => handleButtonClick(0)}
+              onClick={() => handleButtonCV(0)}
             >
               <GiCloudDownload className='w-5 h-5' />
               Download CV
@@ -415,7 +427,7 @@ const AboutSection = ({
               className='w-full bg-gray-100 shadow-[8px_8px_16px_#bebebe,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#bebebe,-4px_-4px_8px_#ffffff] active:shadow-[inset_4px_4px_8px_#bebebe,inset_-4px_-4px_8px_#ffffff] text-gray-800 font-semibold py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2'
               onMouseEnter={() => handleButtonHover(1, true)}
               onMouseLeave={() => handleButtonHover(1, false)}
-              onClick={() => handleButtonClick(1)}
+              onClick={() => handleButtonGetInTouch(1)}
             >
               <GiMailbox className='w-5 h-5' />
               Get In Touch

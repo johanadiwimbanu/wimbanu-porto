@@ -341,9 +341,7 @@ const FoxModel = forwardRef((props, ref) => {
     setAnimation: setAnimation,
   }));
 
-  return (
-    <div ref={modelContainerRef} className='fixed border border-blue-900'></div>
-  );
+  return <div ref={modelContainerRef} className='fixed'></div>;
 });
 FoxModel.displayName = FoxModel;
 
