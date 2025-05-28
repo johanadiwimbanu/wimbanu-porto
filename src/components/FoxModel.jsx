@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { GLTFLoader, OrbitControls } from 'three/examples/jsm/Addons.js';
 
 const FoxModel = forwardRef((props, ref) => {
+  const modelContainerRef = useRef(null);
   const modelRef = useRef(null);
   const mixerRef = useRef(null);
   const animationsRef = useRef(null);
@@ -70,6 +71,7 @@ const FoxModel = forwardRef((props, ref) => {
       modelPath,
       (gltf) => {
         const model = gltf.scene;
+        modelRef.current = model;
         model.position.set(0, 0, 0);
         scene.add(model);
 
@@ -278,8 +280,8 @@ const FoxModel = forwardRef((props, ref) => {
     };
     reRender3D();
 
-    if (!modelRef.current.hasChildNodes()) {
-      modelRef.current.appendChild(renderer.domElement);
+    if (!modelContainerRef.current.hasChildNodes()) {
+      modelContainerRef.current.appendChild(renderer.domElement);
     }
 
     // Debug
@@ -288,8 +290,8 @@ const FoxModel = forwardRef((props, ref) => {
     // scene.add(lightHelper);
 
     return () => {
-      if (modelRef.current?.hasChildNodes()) {
-        modelRef.current.removeChild(renderer.domElement);
+      if (modelContainerRef.current?.hasChildNodes()) {
+        modelContainerRef.current.removeChild(renderer.domElement);
       }
       renderer.dispose();
     };
@@ -339,7 +341,9 @@ const FoxModel = forwardRef((props, ref) => {
     setAnimation: setAnimation,
   }));
 
-  return <div ref={modelRef} className='fixed border border-blue-900'></div>;
+  return (
+    <div ref={modelContainerRef} className='fixed border border-blue-900'></div>
+  );
 });
 FoxModel.displayName = FoxModel;
 

@@ -1,47 +1,41 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import FoxModel from './components/FoxModel';
-import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   GiCardboardBoxClosed,
-  GiLightBackpack,
+  GiBackpack,
   GiMailbox,
   GiWolfHead,
+  GiRocket,
 } from 'react-icons/gi';
 import Navigation from './components/Navigation';
 import GameDialog from './components/GameDialog';
 import AboutSection from './components/AboutSection';
-import SkillsSection from './components/SkillSection';
+import ContactSection from './components/ContactSection';
+import SkillsSection from './components/SkillsSection';
+import ProjectsSection from './components/ProjectsSection';
+
 gsap.registerPlugin(ScrollTrigger);
 
 const FoxApp = () => {
   const foxRef = useRef(null);
   const [isWelcomeDialogStart, setIsWelcomeDialogStart] = useState(false);
+  const [isShitDialogStart, setIsShitDialogStart] = useState(false);
   const welcomeDialogRef = useRef(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isMenuShow, setIsMenuShow] = useState(false);
+  const [isContentShow, setIsContentShow] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
+  const [isModelHide, setIsModelHide] = useState(false);
 
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 2,
-    });
-
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
-
     const gameDialogStartTimer = setTimeout(() => {
       setIsWelcomeDialogStart(true);
     }, 8000);
 
     return () => {
       clearTimeout(gameDialogStartTimer);
-      lenis.destroy();
     };
   }, []);
 
@@ -93,17 +87,24 @@ const FoxApp = () => {
   }, [isMenuShow]);
 
   const welcomeDialogues = [
-    // 'Hai! Aku Foxy, asisten virtual yang akan memandu kamu menjelajahi portfolio ini.',
-    // 'Aku akan mengenalkanmu kepada <strong>The Wolf</strong>, sang pemilik portofolio ini. Siap untuk menjelajah?',
-    // 'Kamu bisa mengklik menu navigasi atau scroll down untuk melihat lebih detail setelah ini.',
-    'Selamat menikmati pengalaman interaktif ini!✨',
+    'Hai! Aku Foxy, asisten virtual yang akan membimbingmu menjelajahi portofolio ini.',
+    'Aku akan mengenalkanmu kepada <strong>The Wolf</strong>, sang pejuang kode yang punya pengalaman 5 tahun lebih.',
+    'Siap berpetualang? Klik menu navigasi untuk melihat lebih detail.',
+    'let`s gooo! 🐺✨',
   ];
+
+  const shitDialogues = [
+    'HUuuuaaaaaaaaahhh',
+    'Maaf aku tiba-tiba mengantuk. Aku mau tidur dulu',
+    'Jangan bilang <strong>The Wolf</strong> yaaa! nanti dia marah',
+  ];
+
   const [currentDialoguesIndex, setCurrentDialoguesIndex] = useState(0);
 
-  const handleNext = (arrayDialog, setDialogState) => {
+  const handleNext = (arrayDialog, setDialogState, afterEnd) => {
     if (currentDialoguesIndex == arrayDialog.length - 1) {
       setDialogState(false);
-      setIsMenuShow(true);
+      afterEnd();
     }
     if (currentDialoguesIndex < arrayDialog.length - 1 && !isAnimating) {
       setIsAnimating(true);
@@ -133,21 +134,104 @@ const FoxApp = () => {
   };
 
   const menuItems = [
-    { id: 'wolf', icon: <GiWolfHead className='w-12 h-12' />, name: 'about' },
+    {
+      id: 'wolf',
+      icon: <GiWolfHead className='w-5 h-5 md:w-12 md:h-12' />,
+      name: 'about',
+      onSectionShow: () => {
+        setIsModelHide(false);
+        if (activeMenu !== null) return;
+        foxRef.current.setAnimation(
+          foxRef.current.mixerRef,
+          foxRef.current.animationsRef,
+          'Fox_Falling',
+          false
+        );
+        setIsShitDialogStart(true);
+      },
+    },
     {
       id: 'backpack',
-      icon: <GiLightBackpack className='w-12 h-12' />,
+      icon: <GiBackpack className='w-6 h-6 md:w-12 md:h-12' />,
       name: 'skill',
+      onSectionShow: () => {
+        setIsModelHide(false);
+        if (activeMenu !== null) return;
+        foxRef.current.setAnimation(
+          foxRef.current.mixerRef,
+          foxRef.current.animationsRef,
+          'Fox_Falling',
+          false
+        );
+        setIsShitDialogStart(true);
+      },
     },
     {
       id: 'box',
-      icon: <GiCardboardBoxClosed className='w-12 h-12' />,
+      icon: <GiRocket className='w-6 h-6 md:w-12 md:h-12' />,
       name: 'project',
+      onSectionShow: () => {
+        setIsModelHide(false);
+        if (activeMenu !== null) return;
+        foxRef.current.setAnimation(
+          foxRef.current.mixerRef,
+          foxRef.current.animationsRef,
+          'Fox_Falling',
+          false
+        );
+        setIsShitDialogStart(true);
+      },
     },
     {
       id: 'mailbox',
-      icon: <GiMailbox className='w-12 h-12' />,
+      icon: <GiMailbox className='w-6 h-6 md:w-12 md:h-12' />,
       name: 'contact',
+      onSectionShow: () => {
+        if (activeMenu !== null) {
+          setIsModelHide(true);
+          return;
+        }
+        foxRef.current.setAnimation(
+          foxRef.current.mixerRef,
+          foxRef.current.animationsRef,
+          'Fox_Falling',
+          false,
+          () => {
+            setIsModelHide(true);
+          }
+        );
+        setIsShitDialogStart(true);
+        console.log('animasi contact');
+
+        // console.log(foxRef.current.modelRef);
+        // gsap.to(foxRef.current.modelRef.position, {
+        //   x: 50,
+        //   y: -80,
+        //   duration: 5,
+        //   onStart: () => {
+        //     foxRef.current.setAnimation(
+        //       foxRef.current.mixerRef,
+        //       foxRef.current.animationsRef,
+        //       'Fox_Run_InPlace'
+        //     );
+        //   },
+        //   onComplete: () => {
+        //     foxRef.current.setAnimation(
+        //       foxRef.current.mixerRef,
+        //       foxRef.current.animationsRef,
+        //       'Fox_Sit1',
+        //       false,
+        //       () => {
+        //         foxRef.current.setAnimation(
+        //           foxRef.current.mixerRef,
+        //           foxRef.current.animationsRef,
+        //           'Fox_Sit_Idle_Break'
+        //         );
+        //       }
+        //     );
+        //   },
+        // });
+      },
     },
   ];
 
@@ -176,35 +260,69 @@ const FoxApp = () => {
   }, [isMenuShow]);
 
   return (
-    <div className='h-screen w-full relative'>
-      <div className='absolute z-0 h-screen'>
+    <>
+      <div
+        className={`absolute z-0 md:h-screen ${isModelHide ? 'invisible' : ''}`}
+      >
         <FoxModel ref={foxRef} />
       </div>
+      <div className='md:h-screen relative'>
+        {(isWelcomeDialogStart || isShitDialogStart) && (
+          <div
+            className='fixed z-10 top-[35%] right-[55%]'
+            ref={welcomeDialogRef}
+          >
+            {isWelcomeDialogStart && (
+              <GameDialog
+                text={welcomeDialogues[currentDialoguesIndex]}
+                onNext={() => {
+                  handleNext(welcomeDialogues, setIsWelcomeDialogStart, () => {
+                    setIsMenuShow(true);
+                    setCurrentDialoguesIndex(0);
+                  });
+                }}
+              />
+            )}
 
-      {isWelcomeDialogStart && (
-        <div
-          className='absolute z-10 top-[35%] right-[55%]'
-          ref={welcomeDialogRef}
-        >
-          <GameDialog
-            text={welcomeDialogues[currentDialoguesIndex]}
-            onNext={() => {
-              handleNext(welcomeDialogues, setIsWelcomeDialogStart);
-            }}
-          />
-        </div>
-      )}
+            {isShitDialogStart && (
+              <GameDialog
+                text={shitDialogues[currentDialoguesIndex]}
+                onNext={() => {
+                  handleNext(shitDialogues, setIsShitDialogStart, () => {
+                    setCurrentDialoguesIndex(0);
+                    foxRef.current.setAnimation(
+                      foxRef.current.mixerRef,
+                      foxRef.current.animationsRef,
+                      'Fox_Falling_Left',
+                      false
+                    );
+                    setIsContentShow(true);
+                  });
+                }}
+              />
+            )}
+          </div>
+        )}
 
-      {isMenuShow && (
-        <>
-          <div ref={containerRef} className='fixed top-1/2 left-16 z-10'>
+        {isMenuShow && (
+          <div
+            // ref={containerRef}
+            className='w-full md:w-auto bg-white relative md:fixed md:top-1/2 md:-translate-y-1/2 z-100'
+          >
             <Navigation menuItems={menuItems} setActiveMenu={setActiveMenu} />
           </div>
-          {activeMenu === 'about' && <AboutSection />}
-          {activeMenu === 'skill' && <SkillsSection />}
-        </>
-      )}
-    </div>
+        )}
+
+        {isContentShow && (
+          <div className='relative md:mb-0'>
+            {activeMenu === 'about' && <AboutSection />}
+            {activeMenu === 'skill' && <SkillsSection />}
+            {activeMenu === 'project' && <ProjectsSection />}
+            {activeMenu === 'contact' && <ContactSection />}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
