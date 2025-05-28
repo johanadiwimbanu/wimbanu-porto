@@ -294,9 +294,11 @@ const FoxApp = () => {
                       foxRef.current.mixerRef,
                       foxRef.current.animationsRef,
                       'Fox_Falling_Left',
-                      false
+                      false,
+                      () => {
+                        setIsContentShow(true);
+                      }
                     );
-                    setIsContentShow(true);
                   });
                 }}
               />
