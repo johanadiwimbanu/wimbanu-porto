@@ -47,7 +47,7 @@ const ProjectsSection = ({
       level: 'legendary',
       stats: { lines: '1.5K+', commits: '10+', users: 'Public' },
       links: {
-        live: '#',
+        live: 'https://johanadiwimbanu.netlify.app/',
         github: '#',
       },
     },
