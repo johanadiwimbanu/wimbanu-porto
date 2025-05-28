@@ -269,7 +269,7 @@ const FoxApp = () => {
       <div className='md:h-screen relative'>
         {(isWelcomeDialogStart || isShitDialogStart) && (
           <div
-            className='fixed z-10 md:top-[35%] md:right-[55%] bottom-0 w-full md:w-auto'
+            className='fixed z-10 md:top-[35%] md:right-[55%] bottom-0 w-full right-0 md:w-auto'
             ref={welcomeDialogRef}
           >
             {isWelcomeDialogStart && (
